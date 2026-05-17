@@ -1153,9 +1153,24 @@
                 alert("Imeshindikana kuandaa picha ya profile! Jaribu tena.");
             }
         }
-
         async function handleAuthSubmit() {
-            const phone = document.getElementById('auth-phone').value.trim();
+            // Kachujio ka ndani ka kusafisha namba ya simu kabla ya kuitumia
+            function sanitizePhoneNumber(phoneInput) {
+                let phone = phoneInput.toString().trim();
+                if (phone.startsWith("+255")) {
+                    phone = phone.substring(4);
+                } else if (phone.startsWith("255")) {
+                    phone = phone.substring(3);
+                }
+                if (phone.startsWith("0")) {
+                    phone = phone.substring(1);
+                }
+                return phone;
+            }
+
+            const rawPhone = document.getElementById('auth-phone').value.trim();
+            // Kusafisha namba ya simu hapa ili kuondoa usumbufu kwenye Google Sheet
+            const phone = sanitizePhoneNumber(rawPhone);
             const pass = document.getElementById('auth-pass').value.trim();
 
             if (!phone || !pass) {
@@ -1183,7 +1198,27 @@
                 }
             }
         }
+        // Kazi ya kusafisha namba ya simu na kuondoa 0 ya mwanzo
+        function sanitizePhoneNumber(phoneInput) {
+            // 1. Badilisha iwe maandishi (String) na uondoe nafasi zilizo wazi (spaces)
+            let phone = phoneInput.toString().trim();
 
+            // 2. Kama mtumiaji alianza na +255, iondoe
+            if (phone.startsWith("+255")) {
+                phone = phone.substring(4);
+            }
+            // 3. Kama alianza na 255 pekee yake, iondoe
+            else if (phone.startsWith("255")) {
+                phone = phone.substring(3);
+            }
+
+            // 4. HAPA NDIPO TUNAFUTA 0 YA MWANZO: Kama namba inaanza na '0', iondoe
+            if (phone.startsWith("0")) {
+                phone = phone.substring(1);
+            }
+
+            return phone; // Itarudisha mfano: 712345678 (Sifuri imefutwa)
+        }
         async function launchApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
