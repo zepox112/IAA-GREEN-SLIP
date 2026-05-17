@@ -1594,6 +1594,80 @@
                 }
             }
         }
+        // Variable ya kuhifadhi tukio la install kabla halijatokea
+        let deferredPrompt = null;
+
+        // 1. Kusikiliza mfumo unapokuwa tayari kumuonesha mtumiaji ujumbe wa ku-install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Kuzuia kivinjari (Browser) kutoa pop-up yake ya default ya kimya kimya
+            e.preventDefault();
+            // Hifadhi tukio hili ili tulitumie mbeleni
+            deferredPrompt = e;
+
+            console.log("Mfumo upo tayari kwa ajili ya kuongezwa kwenye Home Screen (PWA)");
+
+            // PAPO HAPO: Unaweza kuamua kumuonesha mtumiaji pop-up yako maalum ya chuo baada ya sekunde chache za kuingia programu
+            setTimeout(() => {
+                triggerPWAInstallPopup();
+            }, 4000); // Inasubiri sekunde 4 baada ya programu kufunguka
+        });
+
+        // 2. KAZI YA KUTENGENEZA POP-UP MAALUM YA KUSUKUMA INSTALLATION
+        function triggerPWAInstallPopup() {
+            if (!deferredPrompt) return; // Kama mtumiaji tayari kasha-install, haionekani tena
+
+            // Inabadilisha kichwa na maelezo ya lile info-popup lako lililopo kwenye kodi
+            document.getElementById('popup-title').innerText = "Weka Kwenye Simu (Install App)";
+
+            let installBodyHtml = `
+        <p id="popup-body" style="font-size:13px; color:var(--text-white); margin-bottom: 20px; line-height: 1.5;">
+            Sakinisha (Install) **IAA GREEN SLIP** kwenye simu yako sasa ili uweze kupata mikeka ya uhakika kwa haraka zaidi bila kufungua kivinjari kila saa!
+        </p>
+    `;
+            document.getElementById('popup-custom-body').innerHTML = installBodyHtml;
+
+            // Inatengeneza vifungo vya "Install" na "Baadaye"
+            let actionBtnHtml = `
+        <button onclick="executePWAInstall()" class="btn-primary" style="margin-bottom: 8px; background: var(--gold); color: black;">INSTALL NOW</button>
+        <button onclick="closePopup()" class="btn-primary" style="background: #21262d; color: white; border: 1px solid var(--glass-border);">Baadaye</button>
+    `;
+            document.getElementById('popup-action-btn-area').innerHTML = actionBtnHtml;
+
+            // Inafanya pop-up ionekane kwenye kioo cha mtumiaji
+            document.getElementById('info-popup').classList.remove('hidden');
+        }
+
+        // 3. KAZI YA KUONGOZA SIMU AU KOMPYUTA KUSHUSHA APP LIVE PALE "INSTALL NOW" INAPOGUSWA
+        async function executePWAInstall() {
+            closePopup(); // Funga pop-up kwanza
+
+            if (!deferredPrompt) return;
+
+            // Onesha lile dirisha halisi la mfumo wa simu (Android/iOS/Chrome) linalouliza "Add to Home Screen?"
+            deferredPrompt.prompt();
+
+            // Kusubiri maamuzi ya mwanafunzi (Kama amekubali au amekataa)
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Mtumiaji amefanya maamuzi ya: ${outcome}`);
+
+            // Safisha variable kwani haiwezi kutumika tena kwa mara ya pili
+            deferredPrompt = null;
+
+            // Rudisha muundo wa pop-up uwe wa kawaida kwa ajili ya mambo mengine ya app
+            resetPopupToDefault();
+        }
+
+        // 4. Kurudisha pop-up katika muundo wake wa mwanzo baada ya install kuisha au kukataliwa
+        function resetPopupToDefault() {
+            document.getElementById('popup-custom-body').innerHTML = `<p id="popup-body">Body text...</p>`;
+            document.getElementById('popup-action-btn-area').innerHTML = `<button onclick="closePopup()" class="btn-primary">Sawa</button>`;
+        }
+
+        // 5. Kusikiliza kama mtumiaji akifanikiwa ku-install kikamilifu
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('Hongera! IAA GREEN SLIP imesakinishwa kikamilifu kwenye kifaa chako.');
+            deferredPrompt = null;
+        });
     </script>
 </body>
 
