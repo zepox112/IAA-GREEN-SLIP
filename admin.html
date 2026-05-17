@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>TIPSTER IAA GREEN SLIP | Tipster Hub </title>
+
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mwenda Store">
+
+    <meta name="theme-color" content="#121212">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+</head>
+<style>
+    :root {
+        --bg-dark: #0d1117;
+        --glass-bg: rgba(22, 27, 34, 0.8);
+        --glass-border: rgba(48, 54, 61, 0.6);
+        --neon-green: #238636;
+        --bright-green: #39d353;
+        --text-white: #f0f6fc;
+        --text-gray: #8b949e;
+        --gold: #ffd700;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        background-color: #000;
+        color: var(--text-white);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .screen {
+        width: 100vw;
+        max-width: 450px;
+        height: 100vh;
+        height: -webkit-fill-available;
+        position: absolute;
+        top: 0;
+        background: var(--bg-dark);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        transition: opacity 0.3s ease;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .active {
+        display: flex !important;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(13, 17, 23, 0.9);
+        z-index: 10000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid var(--glass-border);
+        border-top: 5px solid var(--bright-green);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0 {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .admin-header-badge {
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    .auth-container {
+        padding: 30px 25px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        overflow-y: auto;
+    }
+
+    .auth-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--bright-green);
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        font-size: 13px;
+        color: var(--text-gray);
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .profile-upload-container {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .profile-preview-holder {
+        position: relative;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 3px solid var(--bright-green);
+        cursor: pointer;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .profile-preview-holder img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .camera-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: var(--bright-green);
+        color: black;
+        font-size: 16px;
+        padding: 5px;
+        border-radius: 50%;
+    }
+
+    #profile-input {
+        display: none;
+    }
+
+    .input-group {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 14px;
+    }
+
+    .input-group span {
+        color: var(--bright-green);
+        margin-right: 12px;
+        font-size: 20px;
+    }
+
+    .input-group input,
+    .input-group select {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: white;
+        width: 100%;
+        font-size: 15px;
+    }
+
+    .input-group select option {
+        background: var(--bg-dark);
+        color: white;
+    }
+
+    .input-group input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        width: 100%;
+        background: var(--bright-green);
+        color: black;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+        transition: 0.3s;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary:hover {
+        background: var(--neon-green);
+        color: white;
+    }
+
+    .toggle-auth-text {
+        color: var(--text-gray);
+        margin-top: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .toggle-auth-text:hover {
+        color: var(--bright-green);
+    }
+
+    .top-bar {
+        background: var(--glass-bg);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .brand-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .app-logo {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+    }
+
+    .top-bar-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--bright-green);
+    }
+
+    .top-user-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .top-user-info img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--gold);
+        object-fit: cover;
+    }
+
+    .app-content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        padding-bottom: 40px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        border-left: 4px solid var(--bright-green);
+        padding-left: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tipster-profile-summary {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .profile-pic-editor-admin {
+        position: relative;
+        width: 65px;
+        height: 65px;
+        cursor: pointer;
+    }
+
+    .profile-pic-editor-admin img {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--bright-green);
+    }
+
+    .camera-icon-admin {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        background: var(--bright-green);
+        color: black;
+        font-size: 12px;
+        padding: 3px;
+        border-radius: 50%;
+    }
+
+    #change-dp-input-admin {
+        display: none;
+    }
+
+    .tipster-details h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+    }
+
+    .tipster-details p {
+        font-size: 13px;
+        color: var(--text-gray);
+    }
+
+    .logout-header-btn {
+        background: rgba(248, 81, 73, 0.1);
+        border: 1px solid #f85149;
+        color: #f85149;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    /* Mtindo wa kuweka nembo kwenye duara */
+    .app-logo {
+        width: 35px;
+        /* Unaweza kurekebisha ukubwa hapa */
+        height: 35px;
+        /* Lazima upana na urefu ulingane */
+        border-radius: 50%;
+        /* Hii inatengeneza duara */
+        object-fit: cover;
+        /* Inahakikisha picha haipotezi umbo ikijaa */
+        border: 2px solid var(--bright-green);
+        /* Hiari: Mstari wa pembezoni mwa duara */
+    }
+
+    .logout-header-btn:hover {
+        background: #f85149;
+        color: white;
+    }
+
+    .admin-slip-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .admin-slip-info p {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .admin-slip-info span {
+        font-size: 11px;
+        color: var(--text-gray);
+    }
+
+    .delete-slip-btn {
+        background: rgba(248, 81, 73, 0.15);
+        color: #f85149;
+        border: 1px solid rgba(248, 81, 73, 0.3);
+        padding: 6px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
+    .delete-slip-btn:hover {
+        background: #f85149;
+        color: white;
+    }
+</style>
+
+<body>
+
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <div class="admin-header-badge">Tipster Panel</div>
+            <h2 id="auth-title" class="auth-title">Ingia Kama Tipster</h2>
+            <p id="auth-subtitle" class="auth-subtitle">Uchambuzi wako, Uwekezaji wao.</p>
+
+            <div id="signup-profile-upload" class="profile-upload-container hidden">
+                <label for="profile-input">
+                    <div class="profile-preview-holder">
+                        <img id="avatar-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            alt="Avatar">
+                        <span class="material-icons camera-icon">camera_alt</span>
+                    </div>
+                </label>
+                <input type="file" id="profile-input" accept="image/*" onchange="previewImage(event)">
+                <p style="font-size:11px; color:var(--text-gray); margin-top: 5px;">Weka picha yako ya ki-pro</p>
+            </div>
+
+            <div id="name-group" class="input-group hidden">
+                <span class="material-icons">person</span>
+                <input type="text" id="auth-name" placeholder="Jina Kamili la Utambuzi">
+            </div>
+
+            <div class="input-group">
+                <span class="material-icons">phone</span>
+                <input type="number" id="auth-phone" placeholder="Namba ya Simu">
+            </div>
+
+            <div class="input-group">
+                <span class="material-icons">lock</span>
+                <input type="password" id="auth-pass" placeholder="Password">
+            </div>
+
+            <button id="auth-btn" class="btn-primary" onclick="handleAuthSubmit()">INGIA KANISANI</button>
+            <p class="toggle-auth-text" id="toggle-auth" onclick="toggleAuthMode()">Hujasajiliwa kama Tipster? Jisajili
+                Hapa</p>
+        </div>
+    </div>
+
+    <div id="main-app" class="screen hidden">
+        <div class="top-bar">
+            <div class="brand-area">
+                <img class="app-logo" src="logo.jpg" alt="Logo">
+                <span class="top-bar-title">IAA GREEN SLIP</span>
+            </div>
+            <button class="logout-header-btn" onclick="triggerLogout()">Log Out</button>
+        </div>
+
+        <div class="app-content-area">
+            <div class="tipster-profile-summary">
+                <label for="change-dp-input-admin">
+                    <div class="profile-pic-editor-admin">
+                        <img id="dashboard-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            alt="Profile">
+                        <span class="material-icons camera-icon-admin">edit</span>
+                    </div>
+                </label>
+                <input type="file" id="change-dp-input-admin" accept="image/*" onchange="changeTipsterDP(event)">
+
+                <div class="tipster-details">
+                    <h3 id="dashboard-name">Mchambuzi</h3>
+                    <p id="dashboard-phone">07xxxxxxxx</p>
+                </div>
+            </div>
+
+            <h3 class="section-title">Post Mkeka Mpya</h3>
+
+            <div class="input-group">
+                <span class="material-icons">sports_soccer</span>
+                <input type="text" id="slip-match" placeholder="Aina ya Ligi (Mfano: EPL au Mchanganyiko)">
+            </div>
+
+            <div class="input-group">
+                <span class="material-icons">trending_up</span>
+                <input type="number" step="0.01" id="slip-odds" placeholder="Mfano: 2.45">
+            </div>
+
+            <div class="input-group">
+                <span class="material-icons">qr_code</span>
+                <input type="text" id="slip-code" placeholder="Weka Booking Code ya Mkeka">
+            </div>
+
+            <div class="input-group">
+                <span class="material-icons">event</span>
+                <input type="date" id="slip-date">
+            </div>
+
+            <div class="input-group">
+                <span class="material-icons">business</span>
+                <select id="slip-company">
+                    <option value="SportyBet">SportyBet</option>
+                    <option value="Betika">Betika</option>
+                    <option value="1XBet">1XBet</option>
+                    <option value="Gal Sport Betting">Gal Sport Betting</option>
+                    <option value="PMU">PMU</option>
+                    <option value="BetWay">BetWay</option>
+                </select>
+            </div>
+
+            <button class="btn-primary" style="background: var(--gold); color: black;" onclick="submitNewSlip()">
+                Rusha Mkeka <span class="material-icons" style="font-size:16px; vertical-align:middle;">send</span>
+            </button>
+
+            <h3 class="section-title" style="margin-top: 30px;">Mikeka Yako Iliyopo</h3>
+            <div id="my-slips-container">
+                <p class="empty-state">Inapakia mikeka yako...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0q7nWsRSqf_HM0qDis0WPIWdz5fw6MNE7E34EgOCmKrLvJqm_OfIOCSntP5-fQlb_/exec";
+        const IMGBB_API_KEY = "9d19a0f1d80f89446815cfbd8d40ee8c";
+
+        let currentTipster = null;
+        let isSignUpMode = false;
+        let imageUrlFromImgBB = "";
+
+        // USIMAMIZI WA REFRESH: Ukurasa ukipakia unaangalia kama kuna session ya nyuma
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedTipster = localStorage.getItem("gsi_saved_tipster");
+            if (savedTipster) {
+                try {
+                    currentTipster = JSON.parse(savedTipster);
+                    console.log("Tipster ametambuliwa kiotomatiki:", currentTipster.phone);
+                    launchDashboard();
+                } catch (e) {
+                    console.error("Hitilafu ya kusoma kumbukumbu ya kifaa:", e);
+                }
+            }
+        });
+
+        async function sendRequest(data) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error("Mawasiliano yamefeli:", error);
+                return { success: false, message: "Imeshindikana kuunganisha" };
+            }
+        }
+
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append("image", file);
+            try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+                const resData = await response.json();
+                return resData.success ? resData.data.url : null;
+            } catch (error) {
+                console.error("Imeshindikana kurusha picha:", error);
+                return null;
+            }
+        }
+
+        function showLoading(status) {
+            document.getElementById('loading').style.display = status ? 'flex' : 'none';
+        }
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            document.getElementById('auth-title').innerText = isSignUpMode ? "Sajili Akaunti ya Tipster" : "Ingia Kama Tipster";
+            document.getElementById('toggle-auth').innerText = isSignUpMode ? "Tayari una akaunti? Log In" : "Hujasajiliwa kama Tipster? Jisajili Hapa";
+            document.getElementById('auth-btn').innerText = isSignUpMode ? "SAJILI AKAUNTI" : "INGIA";
+
+            if (isSignUpMode) {
+                document.getElementById('signup-profile-upload').classList.remove('hidden');
+                document.getElementById('name-group').classList.remove('hidden');
+            } else {
+                document.getElementById('signup-profile-upload').classList.add('hidden');
+                document.getElementById('name-group').classList.add('hidden');
+            }
+            imageUrlFromImgBB = "";
+        }
+
+        async function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            document.getElementById('avatar-preview').src = URL.createObjectURL(file);
+
+            showLoading(true);
+            const uploadedUrl = await uploadToImgBB(file);
+            showLoading(false);
+
+            if (uploadedUrl) {
+                imageUrlFromImgBB = uploadedUrl;
+                console.log("Picha imepakiwa kwenye ImgBB:", imageUrlFromImgBB);
+            } else {
+                alert("Mawasiliano yamefeli! Jaribu kupakia picha nyingine.");
+            }
+        }
+
+        async function handleAuthSubmit() {
+            const phone = document.getElementById('auth-phone').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            const name = document.getElementById('auth-name').value.trim();
+
+            if (!phone || !pass || (isSignUpMode && !name)) {
+                alert("Tafadhali jaza nafasi zote zilizowazi!");
+                return;
+            }
+
+            showLoading(true);
+
+            if (isSignUpMode) {
+                let finalPic = imageUrlFromImgBB || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                const res = await sendRequest({
+                    action: "registerTipster",
+                    name: name,
+                    phone: phone,
+                    password: pass,
+                    profilePic: finalPic
+                });
+                showLoading(false);
+                alert(res.message);
+                if (res.success) toggleAuthMode();
+            } else {
+                const res = await sendRequest({
+                    action: "loginTipster",
+                    phone: phone,
+                    password: pass
+                });
+                showLoading(false);
+                if (res && res.success) {
+                    currentTipster = res.data;
+                    // INAJISAVE LOCAL STORAGE KIOTOMATIKI HAPA
+                    localStorage.setItem("gsi_saved_tipster", JSON.stringify(currentTipster));
+                    launchDashboard();
+                } else {
+                    alert(res ? res.message : "Namba au password sio sahihi!");
+                }
+            }
+        }
+
+        function launchDashboard() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+
+            document.getElementById('dashboard-name').innerText = currentTipster.name;
+            document.getElementById('dashboard-phone').innerText = currentTipster.phone;
+            document.getElementById('dashboard-avatar').src = currentTipster.profilepic || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('slip-date').value = today;
+
+            loadMySlipsLive();
+        }
+
+        async function changeTipsterDP(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showLoading(true);
+            const uploadedUrl = await uploadToImgBB(file);
+
+            if (uploadedUrl) {
+                const res = await sendRequest({
+                    action: "updateTipsterProfilePic",
+                    phone: currentTipster.phone,
+                    profilePic: uploadedUrl
+                });
+
+                if (res.success) {
+                    document.getElementById('dashboard-avatar').src = uploadedUrl;
+                    currentTipster.profilepic = uploadedUrl;
+                    // Inasasisha kumbukumbu ya Local Storage baada ya DP kubadilika
+                    localStorage.setItem("gsi_saved_tipster", JSON.stringify(currentTipster));
+                    alert("Picha ya wasifu (DP) imesasishwa vizuri kwenye seva!");
+                } else {
+                    alert(res.message);
+                }
+            } else {
+                alert("Imeshindikana kupandisha picha . Angalia mtandao wako.");
+            }
+            showLoading(false);
+        }
+
+        async function loadMySlipsLive() {
+            const container = document.getElementById('my-slips-container');
+            container.innerHTML = `<p class="empty-state">Inapakia mikeka yako...</p>`;
+
+            const response = await sendRequest({ action: "getSlips" });
+
+            if (response && response.success) {
+                let mySlips = response.slips.filter(slip => slip.tipster.toLowerCase().trim() === currentTipster.name.toLowerCase().trim());
+                container.innerHTML = "";
+
+                if (mySlips.length === 0) {
+                    container.innerHTML = `<p class="empty-state">Hujamwaga mkeka wowote bado.</p>`;
+                    return;
+                }
+
+                mySlips.forEach(slip => {
+                    let bettingCompany = slip.status || slip.company || slip.betcompany || "SportyBet";
+                    let div = document.createElement('div');
+                    div.className = "admin-slip-card";
+                    div.innerHTML = `
+                        <div class="admin-slip-info">
+                            <p>${slip.match} (${parseFloat(slip.odds).toFixed(2)} Odds)</p>
+                            <span>🏢 ${bettingCompany} | Code: <b>${slip.code}</b></span>
+                        </div>
+                        <button class="delete-slip-btn" onclick="deleteMySlipLive('${slip.code}')" title="Futa mkeka">
+                            <span class="material-icons">delete_forever</span>
+                        </button>
+                    `;
+                    container.appendChild(div);
+                });
+            } else {
+                container.innerHTML = `<p class="empty-state">Imeshindikana kupata mikeka kutoka sevan.</p>`;
+            }
+        }
+
+        async function deleteMySlipLive(bookingCode) {
+            if (!confirm("Je, una uhakika unataka kufuta kabisa mkeka huu wenye Code: " + bookingCode + "?")) {
+                return;
+            }
+
+            showLoading(true);
+            const res = await sendRequest({
+                action: "deleteSlip",
+                code: bookingCode
+            });
+            showLoading(false);
+
+            alert(res.message);
+            loadMySlipsLive();
+        }
+
+        async function submitNewSlip() {
+            const match = document.getElementById('slip-match').value.trim();
+            const odds = document.getElementById('slip-odds').value.trim();
+            const code = document.getElementById('slip-code').value.trim();
+            const date = document.getElementById('slip-date').value;
+            const company = document.getElementById('slip-company').value;
+
+            if (!match || !odds || !code || !date) {
+                alert("Tafadhali jaza ligi, odds, code na tarehe kabla ya kutuma mkeka!");
+                return;
+            }
+
+            showLoading(true);
+            const res = await sendRequest({
+                action: "postSlipFromTipster",
+                tipster: currentTipster.name,
+                match: match,
+                odds: odds,
+                code: code,
+                date: date,
+                company: company
+            });
+            showLoading(false);
+
+            alert(res.message);
+            if (res.success) {
+                document.getElementById('slip-match').value = "";
+                document.getElementById('slip-odds').value = "";
+                document.getElementById('slip-code').value = "";
+                loadMySlipsLive();
+            }
+        }
+
+        // AMRI YA LOG OUT: Inasafisha Local Storage kabisa kabla ya kutoa mtu
+        function triggerLogout() {
+            currentTipster = null;
+            localStorage.removeItem("gsi_saved_tipster"); // Inafuta akaunti iliyokaririwa kwenye kifaa
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('auth-phone').value = "";
+            document.getElementById('auth-pass').value = "";
+            document.getElementById('auth-name').value = "";
+        }
+    </script>
+</body>
+
+</html>
