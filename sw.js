@@ -1,5 +1,5 @@
 const cacheName = 'iaa-v1';
-const staticAssets = ['./', './index.html', './logo.jpg'];
+const staticAssets = ['./', './index.html', './logo.png'];
 
 self.addEventListener('install', async e => {
     const cache = await caches.open(cacheName);
